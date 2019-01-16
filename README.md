@@ -1,5 +1,7 @@
 ## React Native SwipeUp ScrollView
 
-A very cool scrollview that reproduces the Apple Stocks popup effect.
+A very cool scrollview that reproduces the iOS Stocks App popup view.
 
-Details coming soon..
+Inspiration:
+
+![iOS Stocks App](./stocks-app-screenshot.jpeg)
