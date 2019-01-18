@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Animated,
+  Dimensions,
   Easing,
   PanResponder,
   ScrollView,
@@ -49,9 +50,7 @@ class SwipeUpScrollView extends React.Component {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => {
-        const { dx, dy } = gestureState;
-        return dx > 2 || dx < -2 || dy > 2 || dy < -2;
-        //return true;
+        return true;
       },
 
       onPanResponderGrant: (e, gestureState) => {
@@ -62,6 +61,9 @@ class SwipeUpScrollView extends React.Component {
 
       onPanResponderMove: (event, gestureState) => {
         if (this.state.yOffset > 0) {
+          this.setState({
+            initialHeight: this.state.pan.y._value + gestureState.dy - 1
+          });
           return;
         }
         return this.state.pan.setValue({
@@ -124,13 +126,11 @@ class SwipeUpScrollView extends React.Component {
   };
 
   render() {
+    const { style, stops, children, ...rest } = this.props;
+
     return (
       <Animated.View
-        style={[
-          styles.container,
-          { height: this.state.pan.y },
-          this.props.style
-        ]}
+        style={[styles.container, { height: this.state.pan.y }, style]}
       >
         <PullButton onPress={this._onTogglePressed} />
         <ScrollView
@@ -139,23 +139,26 @@ class SwipeUpScrollView extends React.Component {
           showsHorizontalScrollIndicator={false}
           overScrollMode={"never"}
           scrollEventThrottle={16}
-          scrollEnabled={this.state.snapIndex === this.props.stops.length - 1}
+          scrollEnabled={this.state.snapIndex === stops.length - 1}
           onScroll={event => {
             this.setState({
               yOffset: event.nativeEvent.contentOffset.y
             });
           }}
           {...this._panResponder.panHandlers}
+          {...rest}
         >
-          {this.props.children}
+          {children}
         </ScrollView>
       </Animated.View>
     );
   }
 }
 
+var { height } = Dimensions.get("window");
+
 SwipeUpScrollView.defaultProps = {
-  stops: [100, 400, 700]
+  stops: [100, 400, height - 100]
 };
 
 export default SwipeUpScrollView;
