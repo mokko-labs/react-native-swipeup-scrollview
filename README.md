@@ -2,9 +2,13 @@
 
 A very cool scrollview that reproduces the iOS Stocks App popup view.
 
+#### Demo
+
+<img src="./doc/demo.gif" />
+
 #### Inspiration
 
-<img src="./stocks-app-screenshot.jpeg" width="250" alt="iOS Stocks App" />
+<img src="./doc/stocks-app-screenshot.jpeg" width="250" alt="iOS Stocks App" />
 
 It can also be seen in Apple Maps and other stock iOS apps.
 
