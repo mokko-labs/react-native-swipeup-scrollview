@@ -6,7 +6,8 @@ import {
   PanResponder,
   ScrollView,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from "react-native";
 
 const styles = StyleSheet.create({
@@ -16,26 +17,33 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 100,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 20,
-    backgroundColor: "#ddd"
+    paddingTop: 32,
+    backgroundColor: "#ffffff"
   },
-  pullButton: {
+  topHeader: {
     position: "absolute",
     top: 0,
+    left: 0,
+    right: 0,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  pullButton: {
     width: 60,
     height: 8,
-    marginTop: 8,
     borderRadius: 4,
-    alignSelf: "center",
     backgroundColor: "black",
     opacity: 0.3
   }
 });
 
-const PullButton = props => {
-  return <TouchableOpacity style={styles.pullButton} {...props} />;
+const PullButton = ({ onPress, topButtonStyle, showTopButton, ...rest }) => {
+  return (
+    <TouchableOpacity style={styles.topHeader} onPress={onPress} {...rest}>
+      {showTopButton && <View style={[styles.pullButton, topButtonStyle]} />}
+    </TouchableOpacity>
+  );
 };
 
 class SwipeUpScrollView extends React.Component {
@@ -126,13 +134,35 @@ class SwipeUpScrollView extends React.Component {
   };
 
   render() {
-    const { style, stops, children, ...rest } = this.props;
+    const {
+      wrapperStyle,
+      topCornerRadius,
+      showTopButton,
+      topButtonStyle,
+      stops,
+      children,
+      ...rest
+    } = this.props;
 
     return (
       <Animated.View
-        style={[styles.container, { height: this.state.pan.y }, style]}
+        style={[
+          styles.container,
+          {
+            height: this.state.pan.y,
+            borderTopLeftRadius: topCornerRadius,
+            borderTopRightRadius: topCornerRadius
+            //        marginLeft: 10,
+            //        marginRight: 10
+          },
+          wrapperStyle
+        ]}
       >
-        <PullButton onPress={this._onTogglePressed} />
+        <PullButton
+          onPress={this._onTogglePressed}
+          showTopButton={showTopButton}
+          topButtonStyle={topButtonStyle}
+        />
         <ScrollView
           bounces={false}
           showsVerticalScrollIndicator={false}
@@ -158,7 +188,11 @@ class SwipeUpScrollView extends React.Component {
 var { height } = Dimensions.get("window");
 
 SwipeUpScrollView.defaultProps = {
-  stops: [100, 400, height - 100]
+  stops: [100, 400, height - 100],
+  topCornerRadius: 20,
+  showTopButton: true,
+  topButtonStyle: null,
+  wrapperStyle: null
 };
 
 export default SwipeUpScrollView;
